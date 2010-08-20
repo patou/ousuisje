@@ -32,8 +32,13 @@ body {
 	 	var marker = new google.maps.Marker({
 	        position: latlng, 
 	        map: carte, 
+	        icon: "http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000",
+		        /*new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000", 
+	    	        	new google.maps.Size(146, 42),
+	        	      	new google.maps.Point(0,42))*/
 	        title:"Je suis içi ;)"
 	    });
+	    
 	}
 	
 	function erreur() {
