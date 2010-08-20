@@ -29,7 +29,11 @@ body {
 	function getPosition(position) {
 		latlng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 	 	carte.setCenter(latlng);
-	 	alert(latlng);
+	 	var marker = new google.maps.Marker({
+	        position: latlng, 
+	        map: carte, 
+	        title:"Je suis içi ;)"
+	    });
 	}
 	
 	function erreur() {
@@ -43,11 +47,9 @@ body {
 	      mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
 	    carte = new google.maps.Map(document.getElementById("conteneur_carte"), mesOptions);
-	    navigator.geolocation.getCurrentPosition(function getPosition(position) {
-		 	alert("toto");
-			latlng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-		 	carte.setCenter(latlng);
-		}, erreur);
+	    navigator.geolocation.getCurrentPosition(getPosition, erreur);
+
+	     
 	      
 	}
 </script>
