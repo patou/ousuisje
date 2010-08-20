@@ -51,6 +51,10 @@ body {
 		AQuelAltitudeJeSuis(latlng, bulleInfo);	
 	}
 
+	/**
+	 * Cette fonction cherche l'adresse du visiteur en utilisant le service de Google Geocoder
+	 * Ajoute ensuite dans la bulle d'information l'adresse trouvé
+	 */
 	function AQuelAdresseJeSuis(latlng, bulleInfo) {
 		var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({'latLng': latlng}, function(resultats, statut) {
@@ -66,7 +70,11 @@ body {
 			}
 		});
 	}
-	
+
+	/**
+	 * Cette fonction cherche l'altitude du visiteur en utilisant le service de Google Elevation
+	 * Affiche ensuite l'altitude dans la bulle d'information l'altitude trouvé
+	 */
 	function AQuelAltitudeJeSuis(latlng, bulleInfo) {
 		var altitude = new google.maps.ElevationService();
 		altitude.getElevationForLocations({'locations': [latlng]}, function(resultats, statut) {
@@ -82,15 +90,22 @@ body {
 		});
 	}
 
-	
+	/**
+	 * Cette fonction est appelé quand la géolocalisation a échoué
+	 * Affiche un message d'erreur
+	 */
 	function erreurAfficheOuJeSuis() {
-		alert("Google ne sait pas où vous êtes.");
+		alert("Impossible de savoir où vous êtes ! Demandez votre chemins à un passant sinon ...");
 	}
-	
+
+	/**
+	 * Cette fonction est appelé quand le navigateur a finit de charger la page HTML (body.onload)
+	 * Affiche la carte centré sur la France et lance la géolocalisation si elle est disponible
+	 */
 	function initialisation() {
 		var latlng = new google.maps.LatLng(46.75984,1.738281); // Coordonnées de la France
 		var mesOptions = {
-			zoom: 8, //Zoom de hauteur 8 (compris entre 1 et 22)
+			zoom: 5, //Zoom de hauteur 5 (compris entre 1 et 22)
 			center: latlng, //On centre la carte sur les coordonées de la France
 			mapTypeId: google.maps.MapTypeId.ROADMAP //Type de carte avec les routes
 		};
