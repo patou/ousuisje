@@ -2,65 +2,98 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Où suis-je ?</title>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	<meta name="viewport"
-		content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-
+<title>O suis-je ?</title>
 <style type="text/css">
 html {
-	height: 100%
+        height: 100%
 }
 
 body {
-	height: 100%;
-	margin: 0px;
-	padding: 0px
+        height: 100%;
+        margin: 0px;
+        padding: 0px
 }
 
 #conteneur_carte {
-	height: 100%
+        height: 100%
 }
 </style>
 <script type="text/javascript"
-	src="http://maps.google.com/maps/api/js?sensor=true">
+        src="http://maps.google.com/maps/api/js?sensor=true">
 </script>
 <script type="text/javascript">
-
-	var carte;
+	var geocoder;
+	var altitude;
 	var latlng;
-	
-	function getPosition(position) {
+	var carte;
+	var bulleInfo;
+	var marqueur;
+			
+	function afficheOuJeSuis(position) {
 		latlng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-	 	carte.setCenter(latlng);
-	 	var marker = new google.maps.Marker({
-	        position: latlng, 
-	        map: carte, 
-	        icon: "http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000",
-		        /*new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000", 
-	    	        	new google.maps.Size(146, 42),
-	        	      	new google.maps.Point(0,42))*/
-	        title:"Je suis içi ;)"
-	    });
-	    
+		carte.setCenter(latlng);
+		marqueur = new google.maps.Marker({
+			position: latlng, 
+			map: carte,
+			icon: "http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000",
+			title: "Je suis ici !"
+		}); 
+		bulleInfo = new google.maps.InfoWindow();
+		bulleInfo.setContent('Latitude et longitude : ' + latlng);
+		geocoder.geocode({'latLng': latlng}, function(resultats, statut) {
+			if (statut == google.maps.GeocoderStatus.OK) {
+				if (resultats[1]) {
+					carte.setZoom(14);
+					bulleInfo.setContent(bulleInfo.getContent() + '<br/>Adresse : ' + resultats[1].formatted_address);
+				} else {
+					bulleInfo.setContent(bulleInfo.getContent() + "<br/>Nous n'avons pas trouvé cette adresse");
+				}
+			} else {
+				alert("Le service Geocoder a rencontré une erreur : " + statut);
+			}
+		});
+		AQuelAltitudeJeSuis(latlng);
+		google.maps.event.addListener(marqueur, 'click', function() {
+			bulleInfo.open(carte,marqueur);
+		});	
+	}
+
+	function AQuelAltitudeJeSuis(latlng) {
+		altitude.getElevationForLocations({'locations': [latlng]}, function(resultats, statut) {
+		  if (statut == google.maps.ElevationStatus.OK) {
+			if (resultats[0]) {
+			  bulleInfo.setContent(bulleInfo.getContent() + "<br/>L'altitude est de " + resultats[0].elevation + " mètres.");
+			} else {
+			  bulleInfo.setContent(bulleInfo.getContent() + "<br />Pas d'altitude trouvée");
+			}
+		  } else {
+			  alert("Le service Elevation a rencontré une erreur : " + statut);
+		  }
+		});
+	}
+
+	
+	function erreurAfficheOuJeSuis() {
+		alert("Google ne sait pas où vous êtes.");
 	}
 	
-	function erreur() {
-	      alert("Geolocation a échoué.");
-	}
 	function initialisation() {
-	    latlng = new google.maps.LatLng(49.8, 3.3);
-	    var mesOptions = {
-	      zoom: 14,
-	      center: latlng,
-	      mapTypeId: google.maps.MapTypeId.ROADMAP
-	    };
-	    carte = new google.maps.Map(document.getElementById("conteneur_carte"), mesOptions);
-	    navigator.geolocation.getCurrentPosition(getPosition, erreur);
+		geocoder = new google.maps.Geocoder();
+		altitude = new google.maps.ElevationService();
 
-	     
-	      
+		latlng = new google.maps.LatLng(49.8, 3.3);
+		var mesOptions = {
+			zoom: 14,
+			center: latlng,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		carte = new google.maps.Map(document.getElementById("conteneur_carte"), mesOptions);
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(afficheOuJeSuis, erreurAfficheOuJeSuis);
+		}
+		else {
+			erreurAfficheOuJeSuis();
+		}			
 	}
 </script>
 </head>
