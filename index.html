@@ -40,7 +40,7 @@ body {
 			position: latlng, //Position du marqueur
 			map: carte, //La carte où l'on doit afficher le marqueur
 			//L'icone à afficher : Url de Google Apis qui permet de générer un marqueur avec le texte voulu
-			icon: "http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20%C3%AAtes%20ici|FFFFFF|000000",
+			icon: "http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=location|bb|Vous%20etes%20ici|FFFFFF|000000",
 			title: "Je suis ici !"
 		});
 		//Crétion de la bulle d'information affiché en cliquant sur le marqueur
@@ -66,9 +66,9 @@ body {
 		var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({'latLng': latlng}, function(resultats, statut) {
 			if (statut == google.maps.GeocoderStatus.OK) {
-				if (resultats[1]) {
+				if (resultats[0]) {
 					carte.setZoom(14);
-					bulleInfo.setContent(bulleInfo.getContent() + '<br/>Adresse : ' + resultats[1].formatted_address);
+					bulleInfo.setContent(bulleInfo.getContent() + '<br/>Adresse : ' + resultats[0].formatted_address);
 				} else {
 					bulleInfo.setContent(bulleInfo.getContent() + "<br/>Nous n'avons pas trouvé cette adresse");
 				}
